@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="kk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шалтай Смағұлов: Құйғаннан ғылым шыңына дейін | Цифрлық тарихи портрет</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#0f172a',
+                        balkhashBlue: '#0ea5e9',
+                        softBlue: '#38bdf8',
+                        lightBg: '#f8fafc',
+                        goldAccent: '#d97706',
+                        cardBg: '#ffffff'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(14, 165, 233, 0.85) 100%);
+        }
+    </style>
+</head>
+<body class="bg-lightBg text-slate-800 font-sans antialiased selection:bg-balkhashBlue selection:text-white">
+
+    <header class="fixed top-0 left-0 right-0 z-50 bg-deepBlue/95 backdrop-blur-md border-b border-slate-800 text-white shadow-lg transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#home" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-balkhashBlue to-goldAccent flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-atom text-white text-lg"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-sm tracking-wide group-hover:text-balkhashBlue transition-colors">Шалтай Смағұлов</span>
+                    <span class="block text-[10px] text-slate-400">Тұлға және дәуір: цифрлық портрет</span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden xl:flex items-center space-x-5 text-xs font-medium">
+                <a href="#home" class="hover:text-balkhashBlue transition-colors">Басты бет</a>
+                <a href="#biography" class="hover:text-balkhashBlue transition-colors">Өмір жолы</a>
+                <a href="#era" class="hover:text-balkhashBlue transition-colors">Дәуір байланысы</a>
+                <a href="#chronology" class="hover:text-balkhashBlue transition-colors">Хронология</a>
+                <a href="#works" class="hover:text-balkhashBlue transition-colors">Ғылыми еңбектері</a>
+                <a href="#region-impact" class="hover:text-balkhashBlue transition-colors">Өңірге ықпалы</a>
+                <a href="#author-evaluation" class="hover:text-balkhashBlue transition-colors">Авторлық баға</a>
+                <a href="#map-section" class="hover:text-balkhashBlue transition-colors">Карта</a>
+                <a href="#research" class="hover:text-balkhashBlue transition-colors">Зерттеу</a>
+                <a href="#interview" class="hover:text-balkhashBlue transition-colors">Сұхбат</a>
+                <a href="#gallery" class="hover:text-balkhashBlue transition-colors">Галерея</a>
+                <a href="#sources" class="hover:text-balkhashBlue transition-colors">Дереккөздер</a>
+            </nav>
+
+            <!-- Audio Player Widget (Ready structure) -->
+            <div id="audio-player-container" class="hidden sm:flex items-center space-x-3 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700 text-xs">
+                <button id="audio-toggle-btn" class="text-balkhashBlue hover:text-white transition-colors flex items-center space-x-1.5 focus:outline-none">
+                    <i id="audio-icon" class="fa-solid fa-music"></i>
+                    <span id="audio-status-text">♫ Музыканы қосу</span>
+                </button>
+                <audio id="bg-audio" preload="none"></audio>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="xl:hidden text-slate-300 hover:text-white p-2 focus:outline-none">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden xl:hidden bg-deepBlue border-t border-slate-800 px-6 py-4 space-y-3 shadow-xl max-h-[75vh] overflow-y-auto">
+            <a href="#home" class="block py-1.5 hover:text-balkhashBlue transition-colors">Басты бет</a>
+            <a href="#biography" class="block py-1.5 hover:text-balkhashBlue transition-colors">Өмір жолы мен қызметі</a>
+            <a href="#era" class="block py-1.5 hover:text-balkhashBlue transition-colors">Дәуірдің тарихи жағдайы</a>
+            <a href="#chronology" class="block py-1.5 hover:text-balkhashBlue transition-colors">Хронологиялық желі</a>
+            <a href="#works" class="block py-1.5 hover:text-balkhashBlue transition-colors">Ғылыми еңбектері</a>
+            <a href="#region-impact" class="block py-1.5 hover:text-balkhashBlue transition-colors">Өңірге ықпалы</a>
+            <a href="#author-evaluation" class="block py-1.5 hover:text-balkhashBlue transition-colors">Мұрасына авторлық баға</a>
+            <a href="#map-section" class="block py-1.5 hover:text-balkhashBlue transition-colors">Интерактивті карта</a>
+            <a href="#research" class="block py-1.5 hover:text-balkhashBlue transition-colors">Зерттеу нәтижелері</a>
+            <a href="#interview" class="block py-1.5 hover:text-balkhashBlue transition-colors">Бейнесұхбат</a>
+            <a href="#gallery" class="block py-1.5 hover:text-balkhashBlue transition-colors">Фотогалерея</a>
+            <a href="#sources" class="block py-1.5 hover:text-balkhashBlue transition-colors">Дереккөздер</a>
+        </div>
+    </header>
+
+    <section id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-deepBlue text-white">
+        <div class="absolute inset-0 opacity-20 bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/0f172a/38bdf8?text=Shaltay+Smagulov+Research+Hero');"></div>
+        <div class="absolute inset-0 hero-gradient"></div>
+
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-24 z-10">
+            <div class="inline-flex items-center space-x-2 bg-balkhashBlue/20 border border-balkhashBlue/40 text-balkhashBlue px-4 py-1.5 rounded-full text-xs font-semibold mb-6 backdrop-blur-sm">
+                <i class="fa-solid fa-award"></i>
+                <span>«Тұлға және дәуір: цифрлық тарихи портрет» номинациясының жеке жобасы</span>
+            </div>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+                ҚҰЙҒАННАН <span class="text-transparent bg-clip-text bg-gradient-to-r from-balkhashBlue to-amber-400">ҒЫЛЫМ ШЫҢЫНА</span> ДЕЙІН
+            </h1>
+            <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Шалтай Смағұловтың өмір жолы, ғылыми мұрасы, дәуірмен байланысы және туған өлке тарихына қосқан үлесі.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#research" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-balkhashBlue hover:bg-sky-600 text-white font-semibold shadow-lg shadow-sky-500/25 transition-all text-center">
+                    ЗЕРТТЕУМЕН ТАНЫСУ
+                </a>
+                <a href="#biography" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold backdrop-blur-sm transition-all text-center">
+                    ҒАЛЫМНЫҢ ӨМІР ЖОЛЫ
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="biography" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Тұлғаның өмір жолы мен қызметі</h2>
+            <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+            <p class="text-slate-600 text-lg">
+                Шалтай Смағұлов — физика-математика ғылымдарының докторы, профессор, есептеу математикасы мен математикалық модельдеу саласында еңбек еткен қазақстандық көрнекті ғалым.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+                <h3 class="text-2xl font-bold text-deepBlue flex items-center space-x-3">
+                    <i class="fa-solid fa-house-chimney text-balkhashBlue"></i>
+                    <span>Туған жері мен бастапқы кезең</span>
+                </h3>
+                <p class="text-slate-700 leading-relaxed">
+                    1949 жылғы 16 наурызда Алматы облысы Балқаш ауданындағы Құйған ауылында дүниеге келген. Балалық шағы жөніндегі естелікте Көккөл ауылы да аталады. Сондықтан Құйғанды «туған жері» деп көрсетеміз; бүкіл балалық шағы тек Құйғанда өтті деп жазбаймыз.
+                </p>
+                <div class="p-4 bg-slate-50 border-l-4 border-balkhashBlue rounded-r-xl text-xs text-slate-600">
+                    <p><strong>Дереккөз:</strong> Балалық шағы жөніндегі естелік, «Математика ғылымының дүлдүлі еді» (<a href="https://egemen.kz/article/185362-matematika-ghylymynynh-dulduli-edi" target="_blank" class="text-balkhashBlue underline">Egemen.kz</a>)</p>
+                </div>
+            </div>
+
+            <div id="era" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200/80 space-y-6">
+                <h3 class="text-2xl font-bold text-deepBlue flex items-center space-x-3">
+                    <i class="fa-solid fa-landmark text-goldAccent"></i>
+                    <span>Дәуірдің тарихи және қоғамдық жағдайы</span>
+                </h3>
+                <p class="text-slate-700 leading-relaxed">
+                    Ғалымның қалыптасу кезеңі Кеңес Одағы тұсындағы ғылымның қарқынды дамыған, атап айтқанда Новосібір Академгорогы мен Қазақ мемлекеттік университетінде іргелі математика мектептері қалыптасқан кезеңмен тұспа-тұс келді. Ол күрделі есептеу математикасы мен дифференциалдық теңдеулерді шешудің жаңа әдістерін өндіріске енгізу заманының тұлғасы болды.
+                </p>
+                <div class="p-4 bg-amber-50 border-l-4 border-goldAccent rounded-r-xl text-xs text-slate-600">
+                    <p><strong>Дереккөз:</strong> «Математика майталманы Смағұлов Шалтай» (Вестник ПГУ, 2014)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="chronology" class="py-24 bg-slate-100/70 border-y border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Хронологиялық желі</h2>
+                <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-600">Ғалымның өмір жолының расталған кезеңдері</p>
+            </div>
+
+            <div class="relative border-l-2 border-balkhashBlue/40 ml-4 sm:ml-32 space-y-10">
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-balkhashBlue border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-balkhashBlue/10 text-balkhashBlue font-bold rounded-lg text-sm mb-2">1949 жыл, 16 наурыз</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Дүниеге келуі</h3>
+                    <p class="text-slate-600 mt-1">Алматы облысы Балқаш ауданы Құйған ауылында дүниеге келді.</p>
+                </div>
+
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-balkhashBlue border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-balkhashBlue/10 text-balkhashBlue font-bold rounded-lg text-sm mb-2">1967 жыл</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Студенттік жылдар</h3>
+                    <p class="text-slate-600 mt-1">Қазақ мемлекеттік университетінің механика-математика факультетіне оқуға түсті.</p>
+                </div>
+
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-balkhashBlue border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-balkhashBlue/10 text-balkhashBlue font-bold rounded-lg text-sm mb-2">1970 – 1972 жылдар</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Новосібір кезеңі</h3>
+                    <p class="text-slate-600 mt-1">1970 жылы оқуын жалғастыру үшін Новосібірге барып, 1972 жылы Новосібір мемлекеттік университетін аяқтады.</p>
+                </div>
+
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-balkhashBlue border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-balkhashBlue/10 text-balkhashBlue font-bold rounded-lg text-sm mb-2">1984 жыл</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Алматыға оралу</h3>
+                    <p class="text-slate-600 mt-1">Алматыға оралып, университеттегі ғылыми және оқытушылық қызметін жалғастырды.</p>
+                </div>
+
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-goldAccent border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-goldAccent/10 text-goldAccent font-bold rounded-lg text-sm mb-2">1988 – 1990 жылдар</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Ғылыми дәреже</h3>
+                    <p class="text-slate-600 mt-1">1988 жылы физика-математика ғылымдарының докторы ғылыми дәрежесін алды, 1990 жылы профессор атанды.</p>
+                </div>
+
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-goldAccent border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-goldAccent/10 text-goldAccent font-bold rounded-lg text-sm mb-2">1994 жыл</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Мемлекеттік сыйлық</h3>
+                    <p class="text-slate-600 mt-1">Ғылыми еңбектер циклі үшін Қазақстан Республикасының Мемлекеттік сыйлығына ие болды.</p>
+                </div>
+
+                <div class="relative pl-8 sm:pl-10">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-balkhashBlue border-4 border-white shadow"></div>
+                    <span class="inline-block px-3 py-1 bg-balkhashBlue/10 text-balkhashBlue font-bold rounded-lg text-sm mb-2">2001 – 2003 жылдар</span>
+                    <h3 class="text-xl font-bold text-deepBlue">Декан және соңғы жылдар</h3>
+                    <p class="text-slate-600 mt-1">2001–2003 жылдары ҚазҰУ механика-математика факультетінің деканы болды. 2003 жылғы 22 ақпанда Алматы қаласында қайтыс болды.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="works" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Ғылыми еңбектері мен мұрасы</h2>
+            <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+            <p class="text-slate-600">Навье–Стокс теңдеулері және математикалық модельдеу мектебі</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-balkhashBlue uppercase tracking-wider">Зерттеу бағыты</span>
+                <h3 class="text-xl font-bold text-deepBlue mt-2 mb-3">Навье–Стокс теңдеулері</h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Сұйықтық пен газ қозғалысын сандық модельдеу әдістерін терең зерттеді. Қазақстанда есептеу математикасы мен математикалық модельдеу ғылыми мектебінің дамуына өлшеусіз үлес қосты.
+                </p>
+                <a href="https://vestnik-pm.tou.edu.kz/storage/journals/fizmat_1_2014.pdf" target="_blank" class="text-xs text-balkhashBlue hover:underline">Дереккөз: Вестник ПГУ <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></a>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-goldAccent uppercase tracking-wider">Қолданбалы жүйе</span>
+                <h3 class="text-xl font-bold text-deepBlue mt-2 mb-3">Мұнай-газ кен орындары</h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Оның жетекшілігімен мұнай-газ кен орындарын бақылау, талдау және болжауға арналған ақпараттық жүйе жасалды. Көптеген жас ғалымға ғылыми жетекшілік етті.
+                </p>
+                <a href="https://math.kz/media/journal/journal2017-06-0715635.pdf" target="_blank" class="text-xs text-balkhashBlue hover:underline">Дереккөз: Математический журнал <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></a>
+            </div>
+        </div>
+
+        <!-- Өңірге ықпалы -->
+        <div id="region-impact" class="bg-slate-900 text-white p-8 sm:p-12 rounded-3xl space-y-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-xl bg-balkhashBlue/20 border border-balkhashBlue/40 flex items-center justify-center text-balkhashBlue text-xl">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">Өңірге ықпалы</h3>
+                    <p class="text-xs text-slate-400">Алматы облысы, Балқаш өңірі және республикалық ғылымға әсері</p>
+                </div>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed">
+                Балқаш өңірінен шыққан қарапайым қазақ баласының әлемдік деңгейдегі іргелі математика ғылымының шыңына көтерілуі — туған өлке жастары үшін үлкен өнеге. Оның есімі мен ғылыми мектебі өңірдегі білім беру мен жас буынды ғылымға баулуда рухани бағдар болып табылады.
+            </p>
+        </div>
+    </section>
+
+    <section id="author-evaluation" class="py-24 bg-slate-100/70 border-y border-slate-200">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Мұрасына авторлық баға</h2>
+                <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-600">Зерттеуші автордың ғалым мұрасына берген объективті бағасы</p>
+            </div>
+
+            <div class="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex items-start space-x-4">
+                    <div class="text-balkhashBlue text-3xl"><i class="fa-solid fa-quote-left"></i></div>
+                    <div class="space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+                        <p>
+                            Шалтай Смағұловтың ғылыми мұрасы тек жекелеген математикалық теңдеулерді шешумен шектелмейді. Оның есептеу математикасы саласындағы еңбектері Қазақстандағы жоғары технологиялық модельдеу мектебінің негізін қалады. 
+                        </p>
+                        <p>
+                            Біздің пайымымызша, бұл мұра — заманауи цифрлық дәуірде өндіріс пен ғылымды ұштастырудың жарқын үлгісі. Оның өмір жолы туған жерден басталған үлкен ғылыми сапардың кез келген ынталы жас үшін қолжетімді екенін дәлелдейді.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="map-section" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Интерактивті карта</h2>
+            <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+            <p class="text-slate-600">Шалтай Смағұловтың өмірі мен қызметімен байланысты негізгі орындар</p>
+        </div>
+
+        <div class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-slate-200">
+            <div id="map" class="w-full h-[450px] rounded-2xl z-10"></div>
+            <p class="mt-4 text-center text-xs text-slate-500">Карта зерттеу материалдары мен сенімді дереккөздер негізінде жасалды.</p>
+        </div>
+    </section>
+
+    <section id="research" class="py-24 bg-slate-100/70 border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Зерттеу жобасы және сауалнама нәтижелері</h2>
+                <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-600">Нақты деректер мен сауалнама қорытындылары</p>
+            </div>
+
+            <!-- Сауалнама деректері -->
+            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm mb-12">
+                <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-100 gap-4 mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-deepBlue flex items-center gap-2.5">
+                            <i class="fa-solid fa-chart-pie text-balkhashBlue"></i>
+                            <span>Сауалнама нәтижелері</span>
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">Оқушылар арасында жүргізілген сауалнама қорытындысы</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-3 py-1.5 bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200">
+                            <i class="fa-solid fa-users text-balkhashBlue mr-1"></i> Қатысушылар: 122 оқушы
+                        </span>
+                        <span class="px-3 py-1.5 bg-slate-100 text-slate-700 font-semibold rounded-lg border border-slate-200">
+                            <i class="fa-solid fa-calendar-day text-balkhashBlue mr-1"></i> 12.10.2026
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-y-10">
+                    <!-- 1-сұрақ -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 space-y-4">
+                        <h4 class="font-bold text-deepBlue text-base">1-сұрақ: «Шалтай Смағұлов туралы бұрын естідіңіз бе?»</h4>
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Иә, жақсы білемін (84)</span>
+                                    <span class="font-bold text-balkhashBlue">68.9%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-balkhashBlue h-full" style="width: 68.9%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Естігенмін, бірақ толық білмеймін (23)</span>
+                                    <span class="font-bold text-sky-600">18.9%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-sky-400 h-full" style="width: 18.9%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Жоқ, алғаш рет естіп тұрмын (15)</span>
+                                    <span class="font-bold text-amber-600">12.3%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-amber-400 h-full" style="width: 12.3%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>Түсініктеме:</strong> Респонденттердің 68.9%-ы ғалым туралы бұрыннан хабардар екенін көрсетті.</p>
+                    </div>
+
+                    <!-- 2-сұрақ -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 space-y-4">
+                        <h4 class="font-bold text-deepBlue text-base">2-сұрақ: «Шалтай Смағұловтың қандай ғылым саласында еңбек еткенін білесіз бе?»</h4>
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Математика (96)</span>
+                                    <span class="font-bold text-balkhashBlue">78.7%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-balkhashBlue h-full" style="width: 78.7%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Білмеймін (17)</span>
+                                    <span class="font-bold text-slate-600">13.9%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-slate-400 h-full" style="width: 13.9%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Басқа жауаптар (9)</span>
+                                    <span class="font-bold text-amber-600">7.4%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-amber-400 h-full" style="width: 7.4%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>Түсініктеме:</strong> Катысушылардың 78.7%-ы ғалымның математика саласында еңбек еткенін дұрыс атады.</p>
+                    </div>
+
+                    <!-- 3-сұрақ -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200/80 space-y-4">
+                        <h4 class="font-bold text-deepBlue text-base">3-сұрақ: «Осындай зерттеу жобасы арқылы туған өлкенің тарихын тануға бола ма?»</h4>
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Иә (120)</span>
+                                    <span class="font-bold text-emerald-600">98.4%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full" style="width: 98.4%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <span>Жауап беруге қиналамын (2)</span>
+                                    <span class="font-bold text-slate-500">1.6%</span>
+                                </div>
+                                <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-slate-300 h-full" style="width: 1.6%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>Түсініктеме:</strong> Оқушылардың 98.4%-ы бұл зерттеудің өлке тарихын танудағы маңызын жоғары бағалады.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="interview" class="py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Бейнесұхбат</h2>
+            <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+            <p class="text-slate-600">Зерттеу жұмысына арналған бейнематериал</p>
+        </div>
+
+        <div id="video-interview-card" class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+            <div class="relative bg-slate-900 aspect-video flex items-center justify-center text-center p-6">
+                <!-- YouTube embed placeholder: <iframe class="w-full h-full" src="https://youtu.be/zV1ALzNyYnc?si=Mo2EX7hGWIno2_Lv" frameborder="0" allowfullscreen></iframe> -->
+                <div class="space-y-3">
+                    <div class="w-16 h-16 bg-balkhashBlue/20 text-balkhashBlue rounded-full flex items-center justify-center mx-auto backdrop-blur-sm border border-balkhashBlue/40">
+                        <i class="fa-solid fa-play text-2xl ml-1"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Бейнесұхбат дайындалуда</h3>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto">Сұхбат материалы мен келісім аяқталған соң, бұл жерге бейнежазба орналастырылады.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Фотогалерея -->
+    <section id="gallery" class="py-24 bg-slate-100/70 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-deepBlue mb-4">Фотогалерея</h2>
+                <div class="w-20 h-1 bg-balkhashBlue mx-auto rounded-full mb-6"></div>
+                <p class="text-slate-600">Жоба аясындағы фотосуреттер мен архивтік материалдар</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                    <div class="relative h-60 bg-slate-100 flex items-center justify-center">
+                        <img src="images/shaltay.jpg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Ғалым+суреті';" alt="Шалтай Смағұлов" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-bold text-balkhashBlue uppercase">Ғалым</span>
+                        <h4 class="font-bold text-deepBlue text-sm mt-1">Профессор Шалтай Смағұлов</h4>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                    <div class="relative h-60 bg-slate-100 flex items-center justify-center">
+                        <img src="images/kuygan.jpg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Құйған+ауылы';" alt="Құйған ауылы" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-bold text-balkhashBlue uppercase">Құйған</span>
+                        <h4 class="font-bold text-deepBlue text-sm mt-1">Құйған ауылының көрінісі</h4>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                    <div class="relative h-60 bg-slate-100 flex items-center justify-center">
+                        <img src="images/archive.jpg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Архив+құжаты';" alt="Архив" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-bold text-goldAccent uppercase">Архив</span>
+                        <h4 class="font-bold text-deepBlue text-sm mt-1">Ғылыми архив материалдары</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Дереккөздер -->
+    <section id="sources" class="py-20 bg-slate-900 text-white border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center space-x-2">
+                <i class="fa-solid fa-bookmark text-balkhashBlue"></i>
+                <span>Негізгі дереккөздер</span>
+            </h2>
+            <ul class="space-y-3 text-xs text-slate-300">
+                <li>1. Д. Р. Жумашева, М. Х. Хамитов, «Математика майталманы Смағұлов Шалтай», Вестник ПГУ, 2014, № 1: <a href="https://vestnik-pm.tou.edu.kz/storage/journals/fizmat_1_2014.pdf" target="_blank" class="text-balkhashBlue hover:underline">pdf сілтеме</a></li>
+                <li>2. «Смағұлов Шалтай» кітабының мазмұны: <a href="https://eshop.smartpress.kz/storage/contents/3175.pdf" target="_blank" class="text-balkhashBlue hover:underline">pdf сілтеме</a></li>
+                <li>3. Кітаптың баспа бетіндегі сипаттамасы: <a href="https://eshop.smartpress.kz/shop/sma-lov-shaltay-sh-173-408-b" target="_blank" class="text-balkhashBlue hover:underline">веб-сілтеме</a></li>
+                <li>4. «Памяти профессора Шалтая Смагуловича Смагулова», Математический журнал: <a href="https://math.kz/media/journal/journal2017-06-0715635.pdf" target="_blank" class="text-balkhashBlue hover:underline">pdf сілтеме</a></li>
+                <li>5. Балалық шағы жөніндегі естелік, «Математика ғылымының дүлдүлі еді»: <a href="https://egemen.kz/article/185362-matematika-ghylymynynh-dulduli-edi" target="_blank" class="text-balkhashBlue hover:underline">egemen.kz сілтеме</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deepBlue text-slate-400 py-8 text-center text-xs border-t border-slate-800">
+        <p>© 2026 «Шалтай Смағұлов: Құйғаннан ғылым шыңына дейін» — «Тұлға және дәуір: цифрлық тарихи портрет» номинациясы жобасы.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        window.addEventListener('load', () => {
+            const map = L.map('map').setView([44.5, 76.5], 6);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+
+            L.marker([43.2389, 76.8897]).addTo(map).bindPopup("<b>Алматы қаласы</b><br>Ғылыми және деканаттық қызметі.");
+            L.marker([45.4, 75.8]).addTo(map).bindPopup("<b>Құйған ауылы</b><br>Туған жері.");
+        });
+
+        const audioBtn = document.getElementById('audio-toggle-btn');
+        const bgAudio = document.getElementById('bg-audio');
+        const audioStatusText = document.getElementById('audio-status-text');
+        const audioIcon = document.getElementById('audio-icon');
+
+        let isPlaying = false;
+
+        audioBtn.addEventListener('click', () => {
+            if (!bgAudio.src || bgAudio.src === window.location.href) {
+                alert("Музыка файлы әлі қосылмаған.");
+                return;
+            }
+
+            if (isPlaying) {
+                bgAudio.pause();
+                audioStatusText.innerText = "♫ Музыканы қосу";
+                audioIcon.className = "fa-solid fa-music";
+                isPlaying = false;
+            } else {
+                bgAudio.play().then(() => {
+                    audioStatusText.innerText = "⏸ Кідірту";
+                    audioIcon.className = "fa-solid fa-pause";
+                    isPlaying = true;
+                }).catch(err => {
+                    console.log("Audio play error:", err);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
