@@ -77,7 +77,7 @@
             <div id="audio-player-container" class="hidden sm:flex items-center space-x-3 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700 text-xs">
                 <button id="audio-toggle-btn" class="text-balkhashBlue hover:text-white transition-colors flex items-center space-x-1.5 focus:outline-none">
                     <i id="audio-icon" class="fa-solid fa-music"></i>
-                    <span id="audio-status-text">♫ Аудионы қосу</span>
+                    <span id="audio-status-text">Аудионы қосу</span>
                 </button>
                 <audio id="bg-audio" src="Шалтай Смағұлов 1949.mp3" preload="none"></audio>
             </div>
@@ -470,7 +470,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                     <div class="relative h-60 bg-slate-100 flex items-center justify-center">
-                        <img src="images/shaltay.jpg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Ғалым+суреті';" alt="Шалтай Смағұлов" class="w-full h-full object-cover">
+                        <img src="Ssmagulov.png" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Ғалым+суреті';" alt="Шалтай Смағұлов" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
                         <span class="text-[10px] font-bold text-balkhashBlue uppercase">Ғалым</span>
@@ -478,18 +478,41 @@
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                    <div class="relative h-60 bg-slate-100 flex items-center justify-center">
-                        <img src="images/kuygan.jpg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Құйған+ауылы';" alt="Құйған ауылы" class="w-full h-full object-cover">
-                    </div>
+                    <div class="relative h-60">
+    <div id="gallery-slider" class="flex h-full overflow-x-auto snap-x snap-mandatory scroll-smooth">
+        <img src="Smagulov-za-stolom11.jpg" alt="Шалтай Смағұлов, фото 1" class="w-full h-full object-cover shrink-0 snap-start">
+        <img src="Ssmagulov.png" alt="Шалтай Смағұлов, фото 2" class="w-full h-full object-cover shrink-0 snap-start">
+        <img src="Ssmagulov.png" alt="Шалтай Смағұлов, фото 3" class="w-full h-full object-cover shrink-0 snap-start">
+    </div>
+
+    <button type="button" aria-label="Алдыңғы фото"
+        onclick="document.getElementById('gallery-slider').scrollBy({left: -document.getElementById('gallery-slider').clientWidth, behavior: 'smooth'})"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full px-3 py-1">‹</button>
+    <button type="button" aria-label="Келесі фото"
+        onclick="document.getElementById('gallery-slider').scrollBy({left: document.getElementById('gallery-slider').clientWidth, behavior: 'smooth'})"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full px-3 py-1">›</button>
+</div>
                     <div class="p-4">
                         <span class="text-[10px] font-bold text-balkhashBlue uppercase">Құйған</span>
                         <h4 class="font-bold text-deepBlue text-sm mt-1">Құйған ауылының көрінісі</h4>
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-                    <div class="relative h-60 bg-slate-100 flex items-center justify-center">
-                        <img src="images/archive.jpg" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/38bdf8?text=Архив+құжаты';" alt="Архив" class="w-full h-full object-cover">
-                    </div>
+                    <div class="relative h-60">
+    <div id="kuygan-slider" class="flex h-full overflow-x-auto snap-x snap-mandatory scroll-smooth">
+        <img src="<div class="relative h-60">
+    <div id="kuygan-slider" class="flex h-full overflow-x-auto snap-x snap-mandatory scroll-smooth">
+        <img src="әәі.jpeg" alt="Құйған ауылы, 1-сурет" class="w-full h-full object-cover shrink-0 snap-start">
+        <img src="WhatsApp Image 2026-10-14 at 21.24.56і.jpeg" alt="Құйған ауылы, 2-сурет" class="w-full h-full object-cover shrink-0 snap-start">
+        <img src="WhatsApp Image 2026-10-14 at 21.24.56.jpeg" alt="Құйған ауылы, 3-сурет" class="w-full h-full object-cover shrink-0 snap-start">
+    </div>
+    <button type="button" aria-label="Алдыңғы фото"
+        onclick="document.getElementById('kuygan-slider').scrollBy({left: -document.getElementById('kuygan-slider').clientWidth, behavior: 'smooth'})"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full px-3 py-1">‹</button>
+    <button type="button" aria-label="Келесі фото"
+        onclick="document.getElementById('kuygan-slider').scrollBy({left: document.getElementById('kuygan-slider').clientWidth, behavior: 'smooth'})"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 rounded-full px-3 py-1">›</button>
+</div>
                     <div class="p-4">
                         <span class="text-[10px] font-bold text-goldAccent uppercase">Архив</span>
                         <h4 class="font-bold text-deepBlue text-sm mt-1">Ғылыми архив материалдары</h4>
@@ -558,7 +581,7 @@
 
             if (isPlaying) {
                 bgAudio.pause();
-                audioStatusText.innerText = "♫ Музыканы қосу";
+                audioStatusText.innerText = "Аудионы қосу";
                 audioIcon.className = "fa-solid fa-music";
                 isPlaying = false;
             } else {
